@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.acorn.comm">
+	<select id="selectAll" resultType="commDTO" parameterType="int">
+		SELECT * FROM comm where cno = #{cno}
+	</select>
+	
+	<select id="selectOne" resultType="commDTO" parameterType="int">
+		select d.writer, d.contents, d.regdate
+		from comm d, comm c
+		where c.cmno = d.parent
+		order by c.cmno desc
+	</select>
+	
+	<insert id="insertOne" parameterType="commDTO">
+		INSERT INTO COMM
+		VALUES (#{cno},#{writer},#{contents},0,0,0,comm_cmno_seq.nextval,sysdate)
+	</insert>
+	
+	<insert id="insertChild" parameterType="commDTO" >
+		INSERT INTO COMM
+		VALUES (#{cno},#{writer},#{contents},0,0,#{parent},comm_cmno_seq.nextval,sysdate)
+	</insert>
+	
+	<update id="updateOne" parameterType="int">
+		UPDATE COMM
+		SET contents = #{contents}, regdate = sysdate
+		WHERE cmno = #{cmno}
+	</update>
+	
+	<update id="updateGood" parameterType="int">
+		UPDATE COMM
+		SET good = good+1
+		WHERE cmno = #{cmno}	
+	</update>
+	
+	<update id="updateBad" parameterType="int">
+		UPADATE COMM
+		SET bad = bad+1
+		WHERE cmno = #{cmno}
+	</update>
+	
+	<delete id="deleteOne" parameterType="int">
+		DELETE COMM
+		WHERE cmno = #{cmno}
+	</delete>
+	
+</mapper>
